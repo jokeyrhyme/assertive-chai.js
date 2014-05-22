@@ -28,5 +28,8 @@
   ],
   "dependencies": {
     "node-assert": "f25d9b80eac2cde3080613f4ef18a0a507dd4882"
+  },
+  "devDependencies": {
+    "mocha": "~1.19.0"
   }
 }
