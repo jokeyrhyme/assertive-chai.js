@@ -4,7 +4,7 @@
   "description": "Chai.js without Expect or Should",
   "main": "assertive-chai.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha --ui bdd tests/*.js"
   },
   "keywords": [
     "test",
@@ -14,5 +14,8 @@
     "chai"
   ],
   "author": "\"Ron Waldon\" (http://jokeyrhy.me/)",
-  "license": "BSD"
+  "license": "BSD",
+  "devDependencies": {
+    "mocha": "^1.19.0"
+  }
 }
