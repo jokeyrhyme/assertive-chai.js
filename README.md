@@ -13,9 +13,39 @@ The unit tests are stolen from Chai.JS in part.
 
 ## Why?
 
-- [Chai.JS needlessly requires ECMAScript 5](https://github.com/chaijs/chai/issues/117), making it a poor choice for projects that need to span a wide variety of browsers
+- [Chai.JS requires ECMAScript 5](https://github.com/chaijs/chai/issues/117),
+  making it a poor choice for projects that need to span a wide variety of
+  browsers
 
-- I don't feel that BDD is necessary: as an API it's often harder to
-  learn than TDD, and tests aren't that difficult to read in any case
+- I don't feel BDD-style assertions are worth the hassle of having to
+  learn what is frequently an inconsistent API
 
+- BDD makes more sense at the test framework level, and it's easy to
+  integrate Chai.JS (and this library) with any test framework you like
+
+## How?
+
+### Browser
+
+```sh
+bower install assertive-chai --save-dev
+```
+
+```html
+<script src="bower_components/node-assert/assert.js"></script>
+<script src="bower_components/assertive-chai/assertive-chai.js"></script>
+<script>
+var assert = chai.assert;
+</script>
+```
+
+### Node.JS
+
+```sh
+npm install assertive-chai --save-dev
+```
+
+```javascript
+var assert = require('chai').assert;
+```
 
