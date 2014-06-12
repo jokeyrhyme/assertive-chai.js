@@ -41,11 +41,14 @@ var assert = chai.assert;
 
 ### Node.JS
 
+Frankly, I'd probably just stick with upstream Chai for Node.JS (as there
+aren't any ES5 compatibility issues with Node.JS), but if you like:
+
 ```sh
 npm install assertive-chai --save-dev
 ```
 
 ```javascript
-var assert = require('chai').assert;
+var assert = require('assertive-chai').assert;
 ```
 
