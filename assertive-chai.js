@@ -165,8 +165,8 @@
     if (typeOf(expected) === 'date') {
       expected = expected.getTime();
     }
-    return assert.equal(typeOf(actual), typeOf(expected), msg) &&
-      assert.deepEqual(actual, expected, msg);
+    assert.equal(typeOf(actual), typeOf(expected), msg);
+    return assert.deepEqual(actual, expected, msg);
   };
 
   chai.assert.notDeepEqual = function (actual, expected, msg) {
