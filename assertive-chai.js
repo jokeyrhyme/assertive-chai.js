@@ -190,17 +190,16 @@
   };
 
   chai.assert.deepEqual = function (actual, expected, msg) {
-    if (typeOf(actual) === 'regexp') {
+    if (typeOf(actual) === 'regexp' || typeOf(actual) === 'date') {
       actual = actual.toString();
     }
-    if (typeOf(actual) === 'date') {
-      actual = actual.getTime();
-    }
-    if (typeOf(expected) === 'regexp') {
+    if (typeOf(expected) === 'regexp' || typeOf(expected) === 'date') {
       expected = expected.toString();
     }
-    if (typeOf(expected) === 'date') {
-      expected = expected.getTime();
+    if (['array', 'object'].indexOf(typeOf(actual)) === -1 ||
+        ['array', 'object'].indexOf(typeOf(expected)) === -1) {
+      msg = msg || 'expected ' + format(actual) + ' and ' + format(expected) + ' to be deeply equal';
+      assert.equal(actual, expected, msg);
     }
     msg = msg || 'expected ' + format(actual) + ' to deeply equal ' + format(expected);
     assert.deepEqual(actual, expected, msg);
@@ -215,9 +214,9 @@
       expected = expected.toString();
     }
     try {
-      return assert.notEqual(typeOf(actual), typeOf(expected), msg);
+      assert.notEqual(typeOf(actual), typeOf(expected), msg);
     } catch (e) {
-      return assert.notDeepEqual(actual, expected, msg);
+      assert.notDeepEqual(actual, expected, msg);
     }
   };
 

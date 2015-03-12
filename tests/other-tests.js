@@ -27,7 +27,6 @@
     };
 
     it('deepEqual for issue #4', function() {
-      assert.deepEqual(1, 3);
       // https://github.com/jokeyrhyme/assertive-chai.js/issues/4
       err(function () {
         assert.deepEqual(1, 3);
