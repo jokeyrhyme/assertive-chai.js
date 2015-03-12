@@ -1,6 +1,6 @@
 {
   "name": "assertive-chai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Chai.js without Expect or Should",
   "main": "assertive-chai.js",
   "scripts": {
@@ -16,6 +16,6 @@
   "author": "\"Ron Waldon\" (http://jokeyrhy.me/)",
   "license": "BSD",
   "devDependencies": {
-    "mocha": "^1.19.0"
+    "mocha": "^2.2.1"
   }
 }

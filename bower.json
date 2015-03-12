@@ -1,6 +1,6 @@
 {
   "name": "assertive-chai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     "\"Ron Waldon\" (http://jokeyrhy.me/)"
   ],
@@ -30,7 +30,7 @@
     "node-assert": "f25d9b80eac2cde3080613f4ef18a0a507dd4882"
   },
   "devDependencies": {
-    "mocha": "~1.19.0",
+    "mocha": "~2.2.1",
     "es5-shim": "~3.4.0"
   }
 }
