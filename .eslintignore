@@ -1,0 +1,4 @@
+# 3rd-party files
+bower_components
+node_modules
+tests/chai-assert-tests.js
