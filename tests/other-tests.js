@@ -16,15 +16,22 @@
     err = function (fn, msg) {
       try {
         fn();
-        throw new Error({ message: 'Expected an error' });
-      } catch (ignore) {}
+        throw new Error('Expected an error');
+      } catch (error) {
+        if ('string' === typeof msg) {
+          assert.equal(error.message, msg);
+        } else {
+          assert.match(error.message, msg);
+        }
+      }
     };
 
     it('deepEqual for issue #4', function() {
+      assert.deepEqual(1, 3);
       // https://github.com/jokeyrhyme/assertive-chai.js/issues/4
       err(function () {
         assert.deepEqual(1, 3);
-      }, "expected { tea: \'chai\' } to deeply equal { tea: \'black\' }");
+      }, "expected 1 and 3 to be deeply equal");
     });
 
     it('notDeepEqual for issue #4', function() {

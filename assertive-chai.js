@@ -82,16 +82,10 @@
 
   chai.assert.equal = assert.equal;
   chai.assert.fail = assert.fail;
-  chai.assert.strictEqual = assert.strictEqual;
   chai.assert['throws'] = assert['throws'];
 
-  chai.assert.notDeepEqual = assert.notDeepEqual;
-  chai.assert.notEqual = assert.notEqual;
   chai.assert.notFail = assert.notFail;
-  chai.assert.notStrictEqual = assert.notStrictEqual;
   chai.assert.doesNotThrow = assert.doesNotThrow;
-
-  chai.assert.ifError = assert.ifError;
 
   // https://github.com/chaijs/chai/blob/master/lib/chai/utils/type.js
 
@@ -132,7 +126,7 @@
       }
     }
     return res;
-  };
+  }
 
   function parsePath (path) {
     var str = path.replace(/\[/g, '.[')
@@ -140,17 +134,60 @@
     return parts.map(function (value) {
       var re = /\[(\d+)\]$/
         , mArr = re.exec(value)
-      if (mArr) return { i: parseFloat(mArr[1], 10) };
-      else return { p: value };
+      if (mArr) { return { i: parseFloat(mArr[1], 10) }; }
+      return { p: value };
     });
-  };
+  }
 
   function getPathValue (path, obj) {
     var parsed = parsePath(path);
     return _getPathValue(parsed, obj);
-  };
+  }
 
   // implement Chai.JS's assertions
+
+  function formatJSON(json) {
+    if (json === '[]' || json === '{}') {
+      return json;
+    }
+    json = json.replace(/([{\[,:])/g, '$1 ');
+    json = json.replace(/([}\]])/g, ' $1');
+    json = json.replace(/"(\w+)":/g, '$1:');
+    json = json.replace(/"/g, '\'');
+    json = json.replace(/\s*$/g, ''); // ES3-friendly trim
+    return json;
+  }
+
+  function format(value) {
+    var type = typeOf(value);
+    switch (type) {
+      case 'array':
+        return formatJSON(JSON.stringify(value));
+      case 'function':
+        return value.name ? '[Function: ' + value.name + ']' : '[Function]';
+      case 'object':
+        return formatJSON(JSON.stringify(value));
+      case 'string':
+        return '\'' + value + '\'';
+      default:
+        return value;
+    }
+  }
+
+  chai.assert.notEqual = function (actual, expected, msg) {
+    msg = msg || 'expected ' + format(actual) + ' to not equal ' + expected;
+    assert.notEqual(actual, expected, msg);
+  };
+
+  chai.assert.strictEqual = function (actual, expected, msg) {
+    msg = msg || 'expected ' + format(actual) + ' to equal ' + expected;
+    assert.strictEqual(actual, expected, msg);
+  };
+
+  chai.assert.notStrictEqual = function (actual, expected, msg) {
+    msg = msg || 'expected ' + format(actual) + ' to not equal ' + expected;
+    assert.notStrictEqual(actual, expected, msg);
+  };
 
   chai.assert.deepEqual = function (actual, expected, msg) {
     if (typeOf(actual) === 'regexp') {
@@ -165,11 +202,12 @@
     if (typeOf(expected) === 'date') {
       expected = expected.getTime();
     }
-    return assert.equal(typeOf(actual), typeOf(expected), msg) &&
-      assert.deepEqual(actual, expected, msg);
+    msg = msg || 'expected ' + format(actual) + ' to deeply equal ' + format(expected);
+    assert.deepEqual(actual, expected, msg);
   };
 
   chai.assert.notDeepEqual = function (actual, expected, msg) {
+    msg = msg || 'expected ' + format(actual) + ' to not deeply equal ' + format(expected);
     if (typeOf(actual) === 'regexp' || typeOf(actual) === 'date') {
       actual = actual.toString();
     }
@@ -183,71 +221,93 @@
     }
   };
 
+  chai.assert.ifError = function (value, msg) {
+    chai.assert.notOk(value, msg);
+    assert.ifError(value, msg);
+  };
+
   chai.assert.isTrue = function (value, msg) {
-    return chai.assert.equal(value, true, msg);
+    msg = msg || 'expected ' + format(value) + ' to be true';
+    return chai.assert.strictEqual(value, true, msg);
   };
 
   chai.assert.ok = function (value, msg) {
-    return chai.assert(!!value, true, msg);
+    msg = msg || 'expected ' + format(value) + ' to be truthy';
+    return chai.assert(value, msg);
   };
 
   chai.assert.notOk = function (value, msg) {
-    return chai.assert(!value, true, msg);
+    msg = msg || 'expected ' + format(value) + ' to be falsy';
+    return chai.assert(!value, msg);
   };
 
   chai.assert.isFalse = function (value, msg) {
-    return chai.assert.equal(value, false, msg);
+    msg = msg || 'expected ' + format(value) + ' to be false';
+    return chai.assert.strictEqual(value, false, msg);
   };
 
   chai.assert.typeOf = function (value, type, msg) {
+    msg = msg || 'expected ' + format(value) + ' to be a ' + type;
     return chai.assert.equal(typeOf(value), type, msg);
   };
 
   chai.assert.notTypeOf = function (value, type, msg) {
+    msg = msg || 'expected ' + format(value) + ' not to be a ' + type;
     return chai.assert.notEqual(typeOf(value), type, msg);
   };
 
   chai.assert.instanceOf = function (value, constructor, msg) {
+    msg = msg || 'expected ' + format(value) + ' to be an instance of ' + constructor.name;
     return chai.assert.isTrue(value instanceof constructor, msg);
   };
 
   chai.assert.notInstanceOf = function (value, constructor, msg) {
+    msg = msg || 'expected ' + format(value) + ' to not be an instance of ' + constructor.name;
     return chai.assert.isFalse(value instanceof constructor, msg);
   };
 
   chai.assert.isObject = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' to be an object';
     return chai.assert.typeOf(value, 'object', msg);
   };
 
   chai.assert.isNotObject = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' not to be an object';
     return chai.assert.notTypeOf(value, 'object', msg);
   };
 
   chai.assert.isNull = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' to equal null';
     return chai.assert.typeOf(value, 'null', msg);
   };
 
   chai.assert.isNotNull = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' to not equal null';
     return chai.assert.notTypeOf(value, 'null', msg);
   };
 
   chai.assert.isUndefined = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' to equal undefined';
     return chai.assert.typeOf(value, 'undefined', msg);
   };
 
   chai.assert.isDefined = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' to not equal undefined';
     return chai.assert.notTypeOf(value, 'undefined', msg);
   };
 
   chai.assert.isFunction = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' to be a function';
     return chai.assert.typeOf(value, 'function', msg);
   };
 
   chai.assert.isNotFunction = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' not to be a function';
     return chai.assert.notTypeOf(value, 'function', msg);
   };
 
   chai.assert.isArray = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' to be an array';
     if (Array.isArray) {
       return chai.assert.isTrue(Array.isArray(value), msg);
     }
@@ -255,6 +315,7 @@
   };
 
   chai.assert.isNotArray = function (value, msg) {
+    msg = msg || 'expected ' + format(value) + ' not to be an array';
     if (Array.isArray) {
       return chai.assert.isFalse(Array.isArray(value), msg);
     }
@@ -287,6 +348,7 @@
 
   chai.assert.include = function (haystack, needle, msg) {
     var prop;
+    msg = msg || 'expected ' + format(haystack) + ' to include ' + format(needle);
     if (typeOf(haystack) === 'object' && typeOf(needle) === 'object') {
       for (prop in needle) {
         if (needle.hasOwnProperty(prop) && haystack.hasOwnProperty(prop)) {
@@ -295,12 +357,16 @@
       }
       return;
     }
-    return chai.assert.isFunction(haystack.indexOf) &&
+    if (typeOf(haystack) === 'array' || typeOf(haystack) === 'string') {
       chai.assert.notEqual(haystack.indexOf(needle), -1, msg);
+      return;
+    }
+    chai.assert.fail(true, false, msg);
   };
 
   chai.assert.notInclude = function (haystack, needle, msg) {
     var prop;
+    msg = msg || 'expected ' + format(haystack) + ' to not include ' + format(needle);
     if (typeOf(haystack) === 'object' && typeOf(needle) === 'object') {
       for (prop in needle) {
         if (needle.hasOwnProperty(prop) && haystack.hasOwnProperty(prop)) {
@@ -309,112 +375,129 @@
       }
       return;
     }
-    if (typeOf(haystack) === 'array' && typeOf(haystack) === 'string') {
-      return chai.assert.equal(haystack.indexOf(needle), -1, msg);
+    if (typeOf(haystack) === 'array' || typeOf(haystack) === 'string') {
+      chai.assert.equal(haystack.indexOf(needle), -1, msg);
     }
   };
 
   chai.assert.lengthOf = function (obj, length, msg) {
+    chai.assert.property(obj, 'length', msg);
     if (obj && typeOf(obj.length) === 'number') {
-      return chai.assert.equal(obj.length, length, msg);
+      msg = msg || 'expected ' + format(obj) + ' to have a length of ' + length + ' but got ' + obj.length;
+      chai.assert.equal(obj.length, length, msg);
     }
   };
 
   chai.assert.match = function (value, regexp, msg) {
-    return chai.assert.instanceOf(regexp, RegExp) &&
-      chai.assert.isTrue(regexp.test(value), msg);
+    msg = msg || 'expected ' + format(value) + ' to match ' + regexp;
+    chai.assert.instanceOf(regexp, RegExp, msg);
+    chai.assert.isTrue(regexp.test(value), msg);
   };
 
   chai.assert.notMatch = function (value, regexp, msg) {
-    return chai.assert.instanceOf(regexp, RegExp) &&
-      chai.assert.isFalse(regexp.test(value), msg);
+    msg = msg || 'expected ' + format(value) + ' not to match ' + regexp;
+    chai.assert.instanceOf(regexp, RegExp, msg);
+    chai.assert.isFalse(regexp.test(value), msg);
   };
 
   chai.assert.property = function (object, property, msg) {
-    chai.assert.instanceOf(object, Object);
-    chai.assert.isString(property);
-    return chai.assert.isDefined(object[property], msg);
+    msg = msg || 'expected ' + format(object) + ' to have a property ' + format(property);
+    chai.assert.isDefined(object, msg);
+    chai.assert.isString(property, msg);
+    chai.assert.isDefined(object[property], msg);
   };
 
   chai.assert.notProperty = function (object, property, msg) {
-    chai.assert.instanceOf(object, Object);
+    msg = msg || 'expected ' + format(object) + ' to not have property ' + format(property);
+    chai.assert.isDefined(object);
     chai.assert.isString(property);
-    return chai.assert.isUndefined(object[property], msg);
+    chai.assert.isUndefined(object[property], msg);
   };
 
   chai.assert.deepProperty = function (object, property, msg) {
-    chai.assert.instanceOf(object, Object);
+    msg = msg || 'expected ' + format(object) + ' to have a deep property ' + format(property);
+    chai.assert.isDefined(object);
     chai.assert.isString(property);
-    return chai.assert.isDefined(getPathValue(property, object), msg);
+    chai.assert.isDefined(getPathValue(property, object), msg);
   };
 
   chai.assert.notDeepProperty = function (object, property, msg) {
-    chai.assert.instanceOf(object, Object);
+    msg = msg || 'expected ' + format(object) + ' to not have deep property ' + format(property);
+    chai.assert.isDefined(object);
     chai.assert.isString(property);
-    return chai.assert.isUndefined(getPathValue(property, object), msg);
+    chai.assert.isUndefined(getPathValue(property, object), msg);
   };
 
   chai.assert.propertyVal = function (object, property, value, msg) {
-    chai.assert.instanceOf(object, Object);
+    chai.assert.isDefined(object);
     chai.assert.isString(property);
+    msg = msg || 'expected ' + format(object) + ' to have a property ' + format(property) + ' of ' + format(value) + ', but got ' + format(object[property]);
     chai.assert.isDefined(object[property], msg);
-    return chai.assert.equal(object[property], value, msg);
+    chai.assert.equal(object[property], value, msg);
   };
 
-  chai.assert.notPropertyVal = function (object, property, value, msg) {
-    chai.assert.instanceOf(object, Object);
+  chai.assert.propertyNotVal = function (object, property, value, msg) {
+    chai.assert.isDefined(object);
     chai.assert.isString(property);
+    msg = msg || 'expected ' + format(object) + ' to not have a property ' + format(property) + ' of ' + format(value);
     if (typeOf(object[property]) === 'undefined') {
-      return chai.assert.notProperty(object, property, msg);
+      chai.assert.notProperty(object, property, msg);
+      return;
     }
-    return chai.assert.notEqual(object[property], value, msg);
+    chai.assert.notEqual(object[property], value, msg);
   };
 
   chai.assert.deepPropertyVal = function (object, property, value, msg) {
-    chai.assert.instanceOf(object, Object);
+    var actual;
+    chai.assert.isDefined(object);
     chai.assert.isString(property);
-    return chai.assert.equal(getPathValue(property, object), value, msg);
+    actual = getPathValue(property, object);
+    msg = msg || 'expected ' + format(object) + ' to have a deep property ' + format(property) + ' of ' + format(value) + ', but got ' + format(actual);
+    return chai.assert.equal(actual, value, msg);
   };
 
   chai.assert.deepPropertyNotVal = function (object, property, value, msg) {
-    chai.assert.instanceOf(object, Object);
+    chai.assert.isDefined(object);
     chai.assert.isString(property);
-    return chai.assert.notEqual(getPathValue(property, object), value, msg);
+    msg = msg || 'expected ' + format(object) + ' to not have a deep property ' + format(property) + ' of ' + format(value);
+    chai.assert.notEqual(getPathValue(property, object), value, msg);
   };
 
   chai.assert.operator = function (val1, operator, val2, msg) {
+    msg = msg || 'expected ' + format(val1) + ' to be ' + operator + ' ' + format(val2);
     chai.assert.isString(operator);
     switch (operator) {
       case '<':
-        return chai.assert.isTrue(val1 < val2, msg);
+        chai.assert.isTrue(val1 < val2, msg);
         break;
       case '<=':
-        return chai.assert.isTrue(val1 <= val2, msg);
+        chai.assert.isTrue(val1 <= val2, msg);
         break;
       case '>':
-        return chai.assert.isTrue(val1 > val2, msg);
+        chai.assert.isTrue(val1 > val2, msg);
         break;
       case '>=':
-        return chai.assert.isTrue(val1 >= val2, msg);
+        chai.assert.isTrue(val1 >= val2, msg);
         break;
       case '==':
-        return chai.assert.isTrue(val1 == val2, msg);
+        chai.assert.isTrue(val1 == val2, msg);
         break;
       case '!=':
-        return chai.assert.isTrue(val1 != val2, msg);
+        chai.assert.isTrue(val1 != val2, msg);
         break;
       case '===':
-        return chai.assert.isTrue(val1 === val2, msg);
+        chai.assert.isTrue(val1 === val2, msg);
         break;
       case '!==':
-        return chai.assert.isTrue(val1 !== val2, msg);
+        chai.assert.isTrue(val1 !== val2, msg);
         break;
       default:
-        throw new Error('unsupported operator');
+        throw new Error('Invalid operator "' + operator + '"');
     }
   };
 
   chai.assert.closeTo = function (actual, expected, delta, msg) {
+    msg = msg || 'expected ' + actual + ' to be close to ' + expected + ' +/- ' + delta;
     chai.assert.isNumber(actual);
     chai.assert.isNumber(expected);
     chai.assert.isNumber(delta);
@@ -423,6 +506,7 @@
 
   chai.assert.sameMembers = function (set1, set2, msg) {
     var length;
+    msg = msg || 'expected ' + format(set1) + ' to have the same members as ' + format(set2);
     chai.assert.isArray(set1, msg);
     chai.assert.isArray(set2, msg);
     length = set1.length;
@@ -432,6 +516,7 @@
 
   chai.assert.includeMembers = function (superset, subset, msg) {
     var length;
+    msg = msg || 'expected ' + format(superset) + ' to be a superset of ' + format(subset);
     chai.assert.isArray(superset, msg);
     chai.assert.isArray(subset, msg);
     length = subset.length;

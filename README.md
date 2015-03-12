@@ -11,6 +11,22 @@ those assertions](https://github.com/Jxck/assert).
 
 The unit tests are stolen from Chai.JS in part.
 
+### Status
+
+I'm leaning on Node.js' implementation of `deepEqual` and I need to borrow
+Chai's instead, so:
+
+- deep-equality assertion for objects with circular references isn't working yet
+
+- deep-equality assertion for objects like `Object.create({ ... })` isn't working
+either
+
+Likewise, I'm leaning on Node.js' implementation of `throws` and `doesNotThrow`,
+so:
+
+- assertions on the content of a thrown error aren't working yet
+
+
 ## Why?
 
 - [Chai.JS requires ECMAScript 5](https://github.com/chaijs/chai/issues/117),
