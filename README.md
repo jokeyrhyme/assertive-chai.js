@@ -52,3 +52,8 @@ npm install assertive-chai --save-dev
 var assert = require('assertive-chai').assert;
 ```
 
+## Related Stuff
+
+- see my [tape-chai](https://github.com/jokeyrhyme/tape-chai.js) project if you
+  prefer the simplicity of [tape](https://github.com/substack/tape) but miss
+  some of the more convenient assertions from [chai](http://chaijs.com/)
