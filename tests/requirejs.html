@@ -17,8 +17,21 @@
     <script>
     require(['chai'], function (chai) {
       var assert = chai.assert;
+      mocha.setup('bdd'); // just so we can reuse Chai.JS's tests
 
-      assert(true);
+      mocha.checkLeaks();
+      mocha.globals(['chai']);
+
+      describe('assertive chai', function () {
+
+        it('behaves the same way when included via AMD', function () {
+          assert.isObject(chai);
+          assert.isFunction(assert);
+        });
+
+      });
+
+      mocha.run();
     });
     </script>
   </body>

@@ -48,12 +48,14 @@ bower install assertive-chai --save-dev
 ```
 
 ```html
-<script src="bower_components/node-assert/assert.js"></script>
-<script src="bower_components/assertive-chai/assertive-chai.js"></script>
+<script src="bower_components/assertive-chai/dist/assertive-chai.js"></script>
 <script>
 var assert = chai.assert;
 </script>
 ```
+
+Be sure to include ES5 shims if you need to test in IE8, and a JSON polyfill for
+testing in IE7.
 
 ### Node.JS
 
@@ -67,6 +69,12 @@ npm install assertive-chai --save-dev
 ```javascript
 var assert = require('assertive-chai').assert;
 ```
+
+## Development
+
+- generate the browser bundle: `npm run build`
+- generate browser tests bundle and run Node.js tests: `npm test`
+- run the browser tests by navigating to the HTML files in the tests directory
 
 ## Related Stuff
 

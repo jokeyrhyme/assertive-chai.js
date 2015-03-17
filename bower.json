@@ -5,7 +5,7 @@
     "\"Ron Waldon\" (http://jokeyrhy.me/)"
   ],
   "description": "Chai.js without Expect or Should",
-  "main": "assertive-chai.js",
+  "main": "dist/assertive-chai.js",
   "moduleType": [
     "amd",
     "globals",
