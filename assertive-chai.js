@@ -4,6 +4,10 @@
 
 var assert = require('assert');
 
+// 3rd-party modules
+
+var pathval = require('pathval');
+
 // this module
 
 var chai, natives, typeOf;
@@ -43,42 +47,6 @@ typeOf = function (obj) {
   if (obj === Object(obj)) return 'object';
   return typeof obj;
 };
-
-// https://github.com/chaijs/chai/blob/master/lib/chai/utils/getPathValue.js
-
-function _getPathValue (parsed, obj) {
-  var tmp = obj
-    , res;
-  for (var i = 0, l = parsed.length; i < l; i++) {
-    var part = parsed[i];
-    if (tmp) {
-      if ('undefined' !== typeof part.p)
-        tmp = tmp[part.p];
-      else if ('undefined' !== typeof part.i)
-        tmp = tmp[part.i];
-      if (i == (l - 1)) res = tmp;
-    } else {
-      res = undefined;
-    }
-  }
-  return res;
-}
-
-function parsePath (path) {
-  var str = path.replace(/\[/g, '.[')
-    , parts = str.match(/(\\\.|[^.]+?)+/g);
-  return parts.map(function (value) {
-    var re = /\[(\d+)\]$/
-      , mArr = re.exec(value)
-    if (mArr) { return { i: parseFloat(mArr[1], 10) }; }
-    return { p: value };
-  });
-}
-
-function getPathValue (path, obj) {
-  var parsed = parsePath(path);
-  return _getPathValue(parsed, obj);
-}
 
 // implement Chai.JS's assertions
 
@@ -362,14 +330,14 @@ chai.assert.deepProperty = function (object, property, msg) {
   msg = msg || 'expected ' + format(object) + ' to have a deep property ' + format(property);
   chai.assert.isDefined(object);
   chai.assert.isString(property);
-  chai.assert.isDefined(getPathValue(property, object), msg);
+  chai.assert.isDefined(pathval.get(object, property), msg);
 };
 
 chai.assert.notDeepProperty = function (object, property, msg) {
   msg = msg || 'expected ' + format(object) + ' to not have deep property ' + format(property);
   chai.assert.isDefined(object);
   chai.assert.isString(property);
-  chai.assert.isUndefined(getPathValue(property, object), msg);
+  chai.assert.isUndefined(pathval.get(object, property), msg);
 };
 
 chai.assert.propertyVal = function (object, property, value, msg) {
@@ -395,7 +363,7 @@ chai.assert.deepPropertyVal = function (object, property, value, msg) {
   var actual;
   chai.assert.isDefined(object);
   chai.assert.isString(property);
-  actual = getPathValue(property, object);
+  actual = pathval.get(object, property);
   msg = msg || 'expected ' + format(object) + ' to have a deep property ' + format(property) + ' of ' + format(value) + ', but got ' + format(actual);
   return chai.assert.equal(actual, value, msg);
 };
@@ -404,7 +372,7 @@ chai.assert.deepPropertyNotVal = function (object, property, value, msg) {
   chai.assert.isDefined(object);
   chai.assert.isString(property);
   msg = msg || 'expected ' + format(object) + ' to not have a deep property ' + format(property) + ' of ' + format(value);
-  chai.assert.notEqual(getPathValue(property, object), value, msg);
+  chai.assert.notEqual(pathval.get(object, property), value, msg);
 };
 
 chai.assert.operator = function (val1, operator, val2, msg) {
