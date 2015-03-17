@@ -146,27 +146,36 @@
 
   // implement Chai.JS's assertions
 
-  function formatJSON(json) {
-    if (json === '[]' || json === '{}') {
-      return json;
+  function formatAsJSON(value) {
+    var type = typeOf(value);
+    var json;
+    if (type === 'array' || type === 'object') {
+      try {
+        json = JSON.stringify(value);
+        if (json === '[]' || json === '{}') {
+          return json;
+        }
+        json = json.replace(/([{\[,:])/g, '$1 ');
+        json = json.replace(/([}\]])/g, ' $1');
+        json = json.replace(/"(\w+)":/g, '$1:');
+        json = json.replace(/"/g, '\'');
+        json = json.replace(/\s*$/g, ''); // ES3-friendly trim
+        return json;
+      } catch (ignore) {
+        return '[' + type + ']';
+      }
     }
-    json = json.replace(/([{\[,:])/g, '$1 ');
-    json = json.replace(/([}\]])/g, ' $1');
-    json = json.replace(/"(\w+)":/g, '$1:');
-    json = json.replace(/"/g, '\'');
-    json = json.replace(/\s*$/g, ''); // ES3-friendly trim
-    return json;
   }
 
   function format(value) {
     var type = typeOf(value);
     switch (type) {
       case 'array':
-        return formatJSON(JSON.stringify(value));
+        return formatAsJSON(value);
       case 'function':
         return value.name ? '[Function: ' + value.name + ']' : '[Function]';
       case 'object':
-        return formatJSON(JSON.stringify(value));
+        return formatAsJSON(value);
       case 'string':
         return '\'' + value + '\'';
       default:
