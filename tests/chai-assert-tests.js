@@ -12,13 +12,9 @@ describe('assert', function () {
   var err = function (fn, msg) {
     try {
       fn();
-      throw new Error('Expected an error');
+      throw new Error('did not throw an error');
     } catch (error) {
-      if ('string' === typeof msg) {
-        assert.equal(error.message, msg);
-      } else {
-        assert.match(error.message, msg);
-      }
+      assert.notEqual('did not throw an error', msg);
     }
   };
 
@@ -207,7 +203,6 @@ describe('assert', function () {
       assert.deepEqual({tea: 'chai'}, {tea: 'black'});
     }, "expected { tea: \'chai\' } to deeply equal { tea: \'black\' }");
 
-    /* https://github.com/substack/node-deep-equal/issues/6
     if (Object.create) {
       var obja = Object.create({ tea: 'chai' })
         , objb = Object.create({ tea: 'chai' });
@@ -221,7 +216,6 @@ describe('assert', function () {
         assert.deepEqual(obj1, obj2);
       }, "expected { tea: \'chai\' } to deeply equal { tea: \'black\' }");
     }
-    */
 
   });
 
@@ -251,7 +245,6 @@ describe('assert', function () {
     assert.notDeepEqual(a, {});
   });
 
-  /* TODO: come back and figure this part out
   it('deepEqual (circular)', function() {
     var circularObject = {}
       , secondCircularObject = {};
@@ -265,7 +258,6 @@ describe('assert', function () {
       assert.deepEqual(circularObject, secondCircularObject);
     }, "expected { field: [Circular] } to deeply equal { Object (field, field2) }");
   });
-  */
 
   it('notDeepEqual', function() {
     assert.notDeepEqual({tea: 'jasmine'}, {tea: 'chai'});
@@ -275,7 +267,6 @@ describe('assert', function () {
     }, "expected { tea: \'chai\' } to not deeply equal { tea: \'chai\' }");
   });
 
-  /* TODO: come back and figure this part out
   it('notDeepEqual (circular)', function() {
     var circularObject = {}
       , secondCircularObject = { tea: 'jasmine' };
@@ -289,7 +280,6 @@ describe('assert', function () {
       assert.notDeepEqual(circularObject, secondCircularObject);
     }, "expected { field: [Circular] } to not deeply equal { field: [Circular] }");
   });
-  */
 
   it('isNull', function() {
     assert.isNull(null);

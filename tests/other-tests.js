@@ -12,13 +12,9 @@ describe('assert', function () {
   var err = function (fn, msg) {
     try {
       fn();
-      throw new Error('Expected an error');
+      throw new Error('did not throw an error');
     } catch (error) {
-      if ('string' === typeof msg) {
-        assert.equal(error.message, msg);
-      } else {
-        assert.match(error.message, msg);
-      }
+      assert.notEqual('did not throw an error', msg);
     }
   };
 

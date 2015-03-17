@@ -6,6 +6,7 @@ var assert = require('assert');
 
 // 3rd-party modules
 
+var deepEql = require('deep-eql');
 var pathval = require('pathval');
 
 // this module
@@ -103,33 +104,16 @@ chai.assert.notStrictEqual = function (actual, expected, msg) {
 };
 
 chai.assert.deepEqual = function (actual, expected, msg) {
-  if (typeOf(actual) === 'regexp' || typeOf(actual) === 'date') {
-    actual = actual.toString();
-  }
-  if (typeOf(expected) === 'regexp' || typeOf(expected) === 'date') {
-    expected = expected.toString();
-  }
-  if (['array', 'object'].indexOf(typeOf(actual)) === -1 ||
-      ['array', 'object'].indexOf(typeOf(expected)) === -1) {
-    msg = msg || 'expected ' + format(actual) + ' and ' + format(expected) + ' to be deeply equal';
-    assert.equal(actual, expected, msg);
-  }
   msg = msg || 'expected ' + format(actual) + ' to deeply equal ' + format(expected);
-  assert.deepEqual(actual, expected, msg);
+  chai.assert.isTrue(deepEql(actual, expected), msg);
 };
 
 chai.assert.notDeepEqual = function (actual, expected, msg) {
   msg = msg || 'expected ' + format(actual) + ' to not deeply equal ' + format(expected);
-  if (typeOf(actual) === 'regexp' || typeOf(actual) === 'date') {
-    actual = actual.toString();
-  }
-  if (typeOf(expected) === 'regexp' || typeOf(expected) === 'date') {
-    expected = expected.toString();
-  }
   try {
     assert.notEqual(typeOf(actual), typeOf(expected), msg);
   } catch (e) {
-    assert.notDeepEqual(actual, expected, msg);
+    chai.assert.isFalse(deepEql(actual, expected), msg);
   }
 };
 
