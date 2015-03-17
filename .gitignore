@@ -2,3 +2,6 @@
 bower_components
 node_modules
 
+# output files
+coverage
+dist

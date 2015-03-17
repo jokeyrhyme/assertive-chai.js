@@ -4,7 +4,9 @@
   "description": "Chai.js without Expect or Should",
   "main": "assertive-chai.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --ui bdd tests/*.js"
+    "build": "$(npm bin)/browserify -s chai -e assertive-chai.js -o dist/assertive-chai.js",
+    "pretest": "$(npm bin)/browserify -e tests -u assertive-chai -o dist/tests.js",
+    "test": "$(npm bin)/mocha --ui bdd tests"
   },
   "keywords": [
     "test",
@@ -16,6 +18,24 @@
   "author": "\"Ron Waldon\" (http://jokeyrhy.me/)",
   "license": "BSD",
   "devDependencies": {
-    "mocha": "^2.2.1"
+    "babelify": "^5.0.4",
+    "browserify": "^9.0.3",
+    "es5-shim": "^4.1.0",
+    "json3": "^3.3.2",
+    "mocha": "^2.2.1",
+    "requirejs": "^2.1.16"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "whitelist": [
+            "es3.memberExpressionLiterals",
+            "es3.propertyLiterals"
+          ]
+        }
+      ]
+    ]
   }
 }

@@ -1,8 +1,8 @@
 {
   "env": {
-    "amd": true,
+    "amd": false,
     "browser": false,
-    "mocha": false,
+    "mocha": true,
     "node": true
   },
   "globals": {

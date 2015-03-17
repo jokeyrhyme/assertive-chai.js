@@ -2,3 +2,7 @@
 bower_components
 node_modules
 tests/chai-assert-tests.js
+
+# output files
+coverage
+dist

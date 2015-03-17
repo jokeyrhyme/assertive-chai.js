@@ -3,21 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+    <script src="../node_modules/requirejs/require.js"></script>
+    <script>
+    require.config({
+      paths: { chai: '../dist/assertive-chai' }
+    });
+    </script>
   </head>
   <body>
     <div id="mocha"></div>
     <script src="../node_modules/mocha/mocha.js"></script>
 
     <script>
-    mocha.setup('bdd'); // just so we can reuse Chai.JS's tests
-    </script>
+    require(['chai'], function (chai) {
+      var assert = chai.assert;
 
-    <script src="../dist/tests.js"></script>
-
-    <script>
-    mocha.checkLeaks();
-    mocha.globals(['chai']);
-    mocha.run();
+      assert(true);
+    });
     </script>
   </body>
 </html>
