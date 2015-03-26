@@ -37,6 +37,13 @@ chai.assert.doesNotThrow = assert.doesNotThrow;
 function formatAsJSON(value) {
   var type = typeOf(value);
   var json;
+  if (typeof window !== "undefined" && window.navigator) {
+    // in a browser-like environment
+    if (window.navigator.userAgent.indexOf("Phantom") !== -1) {
+      // in PhantomJS
+      return "[" + type + "]";
+    }
+  }
   if (type === "array" || type === "object") {
     try {
       json = JSON.stringify(value);
@@ -1787,6 +1794,8 @@ Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert
 
 // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
 Buffer.prototype.copy = function copy (target, target_start, start, end) {
+  var self = this // source
+
   if (!start) start = 0
   if (!end && end !== 0) end = this.length
   if (target_start >= target.length) target_start = target.length
@@ -1795,13 +1804,13 @@ Buffer.prototype.copy = function copy (target, target_start, start, end) {
 
   // Copy 0 bytes; we're done
   if (end === start) return 0
-  if (target.length === 0 || this.length === 0) return 0
+  if (target.length === 0 || self.length === 0) return 0
 
   // Fatal error conditions
   if (target_start < 0) {
     throw new RangeError('targetStart out of bounds')
   }
-  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+  if (start < 0 || start >= self.length) throw new RangeError('sourceStart out of bounds')
   if (end < 0) throw new RangeError('sourceEnd out of bounds')
 
   // Are we oob?
@@ -1886,7 +1895,8 @@ Buffer._augment = function _augment (arr) {
   arr.constructor = Buffer
   arr._isBuffer = true
 
-  // save reference to original Uint8Array set method before overwriting
+  // save reference to original Uint8Array get/set methods before overwriting
+  arr._get = arr.get
   arr._set = arr.set
 
   // deprecated, will be removed in node 0.13+

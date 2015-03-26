@@ -1,3 +1,4 @@
+/*eslint-env browser, node*/
 'use strict';
 
 // Node.js built-ins
@@ -36,6 +37,13 @@ chai.assert.doesNotThrow = assert.doesNotThrow;
 function formatAsJSON(value) {
   var type = typeOf(value);
   var json;
+  if (typeof window !== 'undefined' && window.navigator) {
+    // in a browser-like environment
+    if (window.navigator.userAgent.indexOf('Phantom') !== -1) {
+      // in PhantomJS
+      return '[' + type + ']';
+    }
+  }
   if (type === 'array' || type === 'object') {
     try {
       json = JSON.stringify(value);
