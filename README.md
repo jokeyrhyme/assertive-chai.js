@@ -76,6 +76,10 @@ var assert = require('assertive-chai').assert;
 - generate browser tests bundle and run Node.js tests: `npm test`
 - run the browser tests by navigating to the HTML files in the tests directory
 
+## License
+
+- [MIT](LICENSE.txt)
+
 ## Related Stuff
 
 - see my [tape-chai](https://github.com/jokeyrhyme/tape-chai.js) project if you
