@@ -4,9 +4,8 @@
   "description": "Chai.js without Expect or Should",
   "main": "assertive-chai.js",
   "scripts": {
-    "build": "$(npm bin)/browserify -s chai -e assertive-chai.js -o dist/assertive-chai.js",
-    "pretest": "$(npm bin)/browserify -e tests -u assertive-chai -o dist/tests.js",
-    "test": "$(npm bin)/mocha --ui bdd tests"
+    "build": "$(npm bin)/gulp build:lib",
+    "test": "$(npm bin)/gulp test:nodejs test:phantomjs"
   },
   "keywords": [
     "test",
@@ -22,9 +21,13 @@
     "babelify": "^5.0.4",
     "browserify": "^9.0.3",
     "es5-shim": "^4.1.0",
+    "gulp": "^3.8.11",
+    "gulp-mocha": "^2.0.0",
+    "gulp-mocha-phantomjs": "^0.5.3",
     "json3": "^3.3.2",
     "mocha": "^2.2.1",
-    "requirejs": "^2.1.16"
+    "requirejs": "^2.1.16",
+    "vinyl-transform": "^1.0.0"
   },
   "browserify": {
     "transform": [
