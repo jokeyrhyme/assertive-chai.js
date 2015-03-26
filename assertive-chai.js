@@ -8,10 +8,11 @@ var assert = require('assert');
 
 var deepEql = require('deep-eql');
 var pathval = require('pathval');
+var typeOf = require('type-detect');
 
 // this module
 
-var chai, natives, typeOf;
+var chai;
 
 chai = {};
 
@@ -29,25 +30,6 @@ chai.assert.notFail = assert.notFail;
 chai.assert.doesNotThrow = assert.doesNotThrow;
 
 // https://github.com/chaijs/chai/blob/master/lib/chai/utils/type.js
-
-natives = {
-  '[object Arguments]': 'arguments',
-  '[object Array]': 'array',
-  '[object Date]': 'date',
-  '[object Function]': 'function',
-  '[object Number]': 'number',
-  '[object RegExp]': 'regexp',
-  '[object String]': 'string'
-};
-
-typeOf = function (obj) {
-  var str = Object.prototype.toString.call(obj);
-  if (natives[str]) return natives[str];
-  if (obj === null) return 'null';
-  if (obj === undefined) return 'undefined';
-  if (obj === Object(obj)) return 'object';
-  return typeof obj;
-};
 
 // implement Chai.JS's assertions
 

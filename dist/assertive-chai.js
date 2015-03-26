@@ -9,10 +9,11 @@ var assert = require("assert");
 
 var deepEql = require("deep-eql");
 var pathval = require("pathval");
+var typeOf = require("type-detect");
 
 // this module
 
-var chai, natives, typeOf;
+var chai;
 
 chai = {};
 
@@ -30,25 +31,6 @@ chai.assert.notFail = assert.notFail;
 chai.assert.doesNotThrow = assert.doesNotThrow;
 
 // https://github.com/chaijs/chai/blob/master/lib/chai/utils/type.js
-
-natives = {
-  "[object Arguments]": "arguments",
-  "[object Array]": "array",
-  "[object Date]": "date",
-  "[object Function]": "function",
-  "[object Number]": "number",
-  "[object RegExp]": "regexp",
-  "[object String]": "string"
-};
-
-typeOf = function (obj) {
-  var str = Object.prototype.toString.call(obj);
-  if (natives[str]) return natives[str];
-  if (obj === null) return "null";
-  if (obj === undefined) return "undefined";
-  if (obj === Object(obj)) return "object";
-  return typeof obj;
-};
 
 // implement Chai.JS's assertions
 
@@ -425,7 +407,7 @@ chai.assert.includeMembers = function (superset, subset, msg) {
 
 module.exports = chai;
 
-},{"assert":2,"deep-eql":11,"pathval":15}],2:[function(require,module,exports){
+},{"assert":2,"deep-eql":11,"pathval":15,"type-detect":16}],2:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //
 // THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
@@ -1805,8 +1787,6 @@ Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert
 
 // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
 Buffer.prototype.copy = function copy (target, target_start, start, end) {
-  var self = this // source
-
   if (!start) start = 0
   if (!end && end !== 0) end = this.length
   if (target_start >= target.length) target_start = target.length
@@ -1815,13 +1795,13 @@ Buffer.prototype.copy = function copy (target, target_start, start, end) {
 
   // Copy 0 bytes; we're done
   if (end === start) return 0
-  if (target.length === 0 || self.length === 0) return 0
+  if (target.length === 0 || this.length === 0) return 0
 
   // Fatal error conditions
   if (target_start < 0) {
     throw new RangeError('targetStart out of bounds')
   }
-  if (start < 0 || start >= self.length) throw new RangeError('sourceStart out of bounds')
+  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
   if (end < 0) throw new RangeError('sourceEnd out of bounds')
 
   // Are we oob?
@@ -1906,8 +1886,7 @@ Buffer._augment = function _augment (arr) {
   arr.constructor = Buffer
   arr._isBuffer = true
 
-  // save reference to original Uint8Array get/set methods before overwriting
-  arr._get = arr.get
+  // save reference to original Uint8Array set method before overwriting
   arr._set = arr.set
 
   // deprecated, will be removed in node 0.13+
@@ -3647,6 +3626,144 @@ function setPathValue(parsed, val, obj) {
 function defined(val) {
   return !(!val && 'undefined' === typeof val);
 }
+
+},{}],16:[function(require,module,exports){
+arguments[4][13][0].apply(exports,arguments)
+},{"./lib/type":17,"dup":13}],17:[function(require,module,exports){
+/*!
+ * type-detect
+ * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Primary Exports
+ */
+
+var exports = module.exports = getType;
+
+/**
+ * ### typeOf (obj)
+ *
+ * Use several different techniques to determine
+ * the type of object being tested.
+ *
+ *
+ * @param {Mixed} object
+ * @return {String} object type
+ * @api public
+ */
+var objectTypeRegexp = /^\[object (.*)\]$/;
+
+function getType(obj) {
+  var type = Object.prototype.toString.call(obj).match(objectTypeRegexp)[1].toLowerCase();
+  // Let "new String('')" return 'object'
+  if (typeof Promise === 'function' && obj instanceof Promise) return 'promise';
+  // PhantomJS has type "DOMWindow" for null
+  if (obj === null) return 'null';
+  // PhantomJS has type "DOMWindow" for undefined
+  if (obj === undefined) return 'undefined';
+  return type;
+}
+
+exports.Library = Library;
+
+/**
+ * ### Library
+ *
+ * Create a repository for custom type detection.
+ *
+ * ```js
+ * var lib = new type.Library;
+ * ```
+ *
+ */
+
+function Library() {
+  if (!(this instanceof Library)) return new Library();
+  this.tests = {};
+}
+
+/**
+ * #### .of (obj)
+ *
+ * Expose replacement `typeof` detection to the library.
+ *
+ * ```js
+ * if ('string' === lib.of('hello world')) {
+ *   // ...
+ * }
+ * ```
+ *
+ * @param {Mixed} object to test
+ * @return {String} type
+ */
+
+Library.prototype.of = getType;
+
+/**
+ * #### .define (type, test)
+ *
+ * Add a test to for the `.test()` assertion.
+ *
+ * Can be defined as a regular expression:
+ *
+ * ```js
+ * lib.define('int', /^[0-9]+$/);
+ * ```
+ *
+ * ... or as a function:
+ *
+ * ```js
+ * lib.define('bln', function (obj) {
+ *   if ('boolean' === lib.of(obj)) return true;
+ *   var blns = [ 'yes', 'no', 'true', 'false', 1, 0 ];
+ *   if ('string' === lib.of(obj)) obj = obj.toLowerCase();
+ *   return !! ~blns.indexOf(obj);
+ * });
+ * ```
+ *
+ * @param {String} type
+ * @param {RegExp|Function} test
+ * @api public
+ */
+
+Library.prototype.define = function(type, test) {
+  if (arguments.length === 1) return this.tests[type];
+  this.tests[type] = test;
+  return this;
+};
+
+/**
+ * #### .test (obj, test)
+ *
+ * Assert that an object is of type. Will first
+ * check natives, and if that does not pass it will
+ * use the user defined custom tests.
+ *
+ * ```js
+ * assert(lib.test('1', 'int'));
+ * assert(lib.test('yes', 'bln'));
+ * ```
+ *
+ * @param {Mixed} object
+ * @param {String} type
+ * @return {Boolean} result
+ * @api public
+ */
+
+Library.prototype.test = function(obj, type) {
+  if (type === getType(obj)) return true;
+  var test = this.tests[type];
+
+  if (test && 'regexp' === getType(test)) {
+    return test.test(obj);
+  } else if (test && 'function' === getType(test)) {
+    return test(obj);
+  } else {
+    throw new ReferenceError('Type test "' + type + '" not defined or invalid.');
+  }
+};
 
 },{}]},{},[1])(1)
 });

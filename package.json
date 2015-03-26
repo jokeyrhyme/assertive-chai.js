@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "deep-eql": "0.1.3",
-    "pathval": "0.1.1"
+    "pathval": "0.1.1",
+    "type-detect": "chaijs/type-detect#1.0.0"
   }
 }
