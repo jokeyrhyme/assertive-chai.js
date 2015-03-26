@@ -18,7 +18,7 @@
     "testing",
     "chai"
   ],
-  "license": "BSD",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
