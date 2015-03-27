@@ -7,6 +7,10 @@
     "build": "$(npm bin)/gulp build:lib",
     "test": "$(npm bin)/gulp test:nodejs test:phantomjs"
   },
+  "files": [
+    "dist/assertive-chai.js",
+    "assertive-chai.js"
+  ],
   "keywords": [
     "test",
     "assertion",
