@@ -1,6 +1,6 @@
 {
   "name": "assertive-chai",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Chai.js without Expect or Should",
   "main": "assertive-chai.js",
   "scripts": {

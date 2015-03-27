@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.0.1 - 2015-03-27
+
+### Fixed
+
+- make sure browser bundle is properly published to NPM (oops)
+
 ## v2.0.0 - 2015-03-27
 
 ### Changed
@@ -22,7 +28,7 @@
 
     - we have a modified version of their tests and some other snippets
 
-### Fixes
+### Fixed
 
 - `deepEquals()` now works with circular objects
 
