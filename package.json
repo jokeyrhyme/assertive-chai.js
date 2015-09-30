@@ -5,6 +5,8 @@
   "main": "assertive-chai.js",
   "scripts": {
     "build": "$(npm bin)/gulp build:lib",
+    "lint": "eslint --fix --cache .",
+    "posttest": "npm run lint",
     "test": "$(npm bin)/gulp test:nodejs test:phantomjs"
   },
   "files": [
@@ -22,10 +24,14 @@
   "author": "\"Ron Waldon\" (https://jokeyrhyme.github.io/)",
   "license": "MIT",
   "devDependencies": {
+    "@jokeyrhyme/eslint-config-es5": "^1.0.0",
     "babelify": "^6.0.2",
     "backbone": "^1.1.2",
     "browserify": "^11.2.0",
     "es5-shim": "^4.1.0",
+    "eslint-config-semistandard": "^5.0.0",
+    "eslint-config-standard": "^4.4.0",
+    "eslint-plugin-standard": "^1.3.1",
     "gulp": "^3.8.11",
     "gulp-mocha": "^2.0.0",
     "gulp-mocha-phantomjs": "^0.10.1",

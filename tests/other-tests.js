@@ -22,14 +22,14 @@ describe('assert', function () {
     }
   };
 
-  it('deepEqual for issue #4', function() {
+  it('deepEqual for issue #4', function () {
     // https://github.com/jokeyrhyme/assertive-chai.js/issues/4
     err(function () {
       assert.deepEqual(1, 3);
-    }, "expected 1 and 3 to be deeply equal");
+    }, 'expected 1 and 3 to be deeply equal');
   });
 
-  it('notDeepEqual for issue #4', function() {
+  it('notDeepEqual for issue #4', function () {
     // https://github.com/jokeyrhyme/assertive-chai.js/issues/4
     assert.notDeepEqual(1, 3);
   });
@@ -50,5 +50,4 @@ describe('assert', function () {
     assert.ok(parent);
     assert.ok(child);
   });
-
 });

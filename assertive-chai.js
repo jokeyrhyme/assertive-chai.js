@@ -1,4 +1,6 @@
-/*eslint-env browser, node*/
+/* eslint-env browser, node */
+/* eslint-disable no-param-reassign */ // too lazy to fix this widespread style
+
 'use strict';
 
 // Node.js built-ins
@@ -35,7 +37,7 @@ chai.assert.doesNotThrow = assert.doesNotThrow;
 
 // implement Chai.JS's assertions
 
-function formatAsJSON(value) {
+function formatAsJSON (value) {
   var type = typeOf(value);
   var json;
   if (typeof window !== 'undefined' && window.navigator) {
@@ -63,7 +65,7 @@ function formatAsJSON(value) {
   }
 }
 
-function format(value) {
+function format (value) {
   var type = typeOf(value);
   switch (type) {
     case 'array':
@@ -374,10 +376,10 @@ chai.assert.operator = function (val1, operator, val2, msg) {
       chai.assert.isTrue(val1 >= val2, msg);
       break;
     case '==':
-      chai.assert.isTrue(val1 == val2, msg);
+      chai.assert.isTrue(val1 === val2, msg);
       break;
     case '!=':
-      chai.assert.isTrue(val1 != val2, msg);
+      chai.assert.isTrue(val1 !== val2, msg);
       break;
     case '===':
       chai.assert.isTrue(val1 === val2, msg);
