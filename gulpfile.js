@@ -5,31 +5,33 @@
 // 3rd-party modules
 
 var browserify = require('browserify');
+var buffer = require('vinyl-buffer');
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var mochaPhantomJS = require('gulp-mocha-phantomjs');
 var mocha = require('gulp-mocha');
-var transform = require('vinyl-transform');
+var source = require('vinyl-source-stream');
 
 // this module
 
 gulp.task('build:lib', [], function () {
-  var browserified = transform(function (filename) {
-    var b = browserify({ entries: filename, standalone: 'chai' });
-    return b.bundle();
-  });
-  return gulp.src('./assertive-chai.js')
-    .pipe(browserified)
-    .pipe(gulp.dest('./dist/'));
+  var filename = './assertive-chai.js';
+  var b = browserify({ entries: filename, standalone: 'chai' });
+  return b.bundle()
+    .pipe(source(filename))
+    .pipe(buffer())
+    .pipe(gulp.dest('./dist/'))
+    .on('error', gutil.log);
 });
 
 gulp.task('build:tests', [], function () {
-  var browserified = transform(function (filename) {
-    var b = browserify({ entries: filename });
-    return b.bundle();
-  });
-  return gulp.src('./tests/index.js')
-    .pipe(browserified)
-    .pipe(gulp.dest('./dist/tests'));
+  var filename = './tests/index.js';
+  var b = browserify({ entries: filename, debug: true });
+  return b.bundle()
+    .pipe(source(filename))
+    .pipe(buffer())
+    .pipe(gulp.dest('./dist/'))
+    .on('error', gutil.log);
 });
 
 gulp.task('test:phantomjs', ['build:lib', 'build:tests'], function () {

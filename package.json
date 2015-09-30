@@ -19,20 +19,23 @@
     "chai"
   ],
   "repository": "https://github.com/jokeyrhyme/assertive-chai.js.git",
-  "author": "\"Ron Waldon\" (http://jokeyrhy.me/)",
+  "author": "\"Ron Waldon\" (https://jokeyrhyme.github.io/)",
   "license": "MIT",
   "devDependencies": {
     "babelify": "^6.0.2",
     "backbone": "^1.1.2",
-    "browserify": "^9.0.3",
+    "browserify": "^11.2.0",
     "es5-shim": "^4.1.0",
     "gulp": "^3.8.11",
     "gulp-mocha": "^2.0.0",
-    "gulp-mocha-phantomjs": "^0.6.1",
+    "gulp-mocha-phantomjs": "^0.10.1",
+    "gulp-util": "^3.0.6",
+    "jquery": "^2.1.4",
     "json3": "^3.3.2",
     "mocha": "^2.2.1",
     "requirejs": "^2.1.16",
-    "vinyl-transform": "^1.0.0"
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   },
   "browserify": {
     "transform": [
