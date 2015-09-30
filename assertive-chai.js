@@ -8,6 +8,7 @@ var assert = require('assert');
 // 3rd-party modules
 
 var deepEql = require('deep-eql');
+var indexOf = require('lodash.indexof');
 var pathval = require('pathval');
 var typeOf = require('type-detect');
 
@@ -243,7 +244,11 @@ chai.assert.include = function (haystack, needle, msg) {
     }
     return;
   }
-  if (typeOf(haystack) === 'array' || typeOf(haystack) === 'string') {
+  if (typeOf(haystack) === 'array') {
+    chai.assert.notEqual(indexOf(haystack, needle), -1, msg);
+    return;
+  }
+  if (typeOf(haystack) === 'string') {
     chai.assert.notEqual(haystack.indexOf(needle), -1, msg);
     return;
   }
@@ -261,7 +266,10 @@ chai.assert.notInclude = function (haystack, needle, msg) {
     }
     return;
   }
-  if (typeOf(haystack) === 'array' || typeOf(haystack) === 'string') {
+  if (typeOf(haystack) === 'array') {
+    chai.assert.equal(indexOf(haystack, needle), -1, msg);
+  }
+  if (typeOf(haystack) === 'string') {
     chai.assert.equal(haystack.indexOf(needle), -1, msg);
   }
 };

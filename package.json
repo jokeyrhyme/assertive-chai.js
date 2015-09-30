@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "deep-eql": "0.1.3",
+    "lodash.indexof": "^3.0.3",
     "pathval": "0.1.1",
     "type-detect": "1.0.0"
   }
