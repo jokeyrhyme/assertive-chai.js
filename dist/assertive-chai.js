@@ -38,7 +38,7 @@ chai.assert.doesNotThrow = assert.doesNotThrow;
 
 // implement Chai.JS's assertions
 
-function formatAsJSON(value) {
+function formatAsJSON (value) {
   var type = typeOf(value);
   var json;
   if (typeof window !== 'undefined' && window.navigator) {
@@ -66,7 +66,7 @@ function formatAsJSON(value) {
   }
 }
 
-function format(value) {
+function format (value) {
   var type = typeOf(value);
   switch (type) {
     case 'array':
