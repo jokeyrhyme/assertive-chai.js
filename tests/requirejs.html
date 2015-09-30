@@ -3,6 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script>
+    mocha.setup('bdd'); // just so we can reuse Chai.JS's tests
+    </script>
     <script src="../node_modules/requirejs/require.js"></script>
     <script>
     require.config({
@@ -12,12 +16,10 @@
   </head>
   <body>
     <div id="mocha"></div>
-    <script src="../node_modules/mocha/mocha.js"></script>
 
     <script>
     require(['chai'], function (chai) {
       var assert = chai.assert;
-      mocha.setup('bdd'); // just so we can reuse Chai.JS's tests
 
       mocha.checkLeaks();
       mocha.globals(['chai']);

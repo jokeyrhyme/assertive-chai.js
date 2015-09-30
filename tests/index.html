@@ -3,14 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
-  </head>
-  <body>
-    <div id="mocha"></div>
     <script src="../node_modules/mocha/mocha.js"></script>
-
     <script>
     mocha.setup('bdd'); // just so we can reuse Chai.JS's tests
     </script>
+  </head>
+  <body>
+    <div id="mocha"></div>
 
     <script src="../dist/tests/index.js"></script>
 
