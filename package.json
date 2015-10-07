@@ -4,10 +4,10 @@
   "description": "Chai.js without Expect or Should",
   "main": "assertive-chai.js",
   "scripts": {
-    "build": "$(npm bin)/gulp build:lib",
+    "build": "gulp build:lib",
     "lint": "eslint --fix --cache .",
     "posttest": "npm run lint",
-    "test": "$(npm bin)/gulp test:nodejs test:phantomjs"
+    "test": "gulp test:nodejs test:phantomjs"
   },
   "files": [
     "dist/assertive-chai.js",
