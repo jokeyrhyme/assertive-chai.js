@@ -1,10 +1,19 @@
 # Changelog
 
+
+## v2.0.2 - 2015-10-07
+
+### Fixed
+
+- drop over-kill babel dependency which complicated projects that use babel
+
+
 ## v2.0.1 - 2015-03-27
 
 ### Fixed
 
 - make sure browser bundle is properly published to NPM (oops)
+
 
 ## v2.0.0 - 2015-03-27
 
