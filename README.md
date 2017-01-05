@@ -2,6 +2,12 @@
 
 [Chai.JS](http://chaijs.com/) without Expect or Should
 
+
+## ABANDONED
+
+Use [jest](https://github.com/facebook/jest) or [ava](https://github.com/avajs/ava) instead
+
+
 ## What?
 
 This is just the [Assert API](http://chaijs.com/api/assert/) from
